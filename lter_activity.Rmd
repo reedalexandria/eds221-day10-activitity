@@ -6,9 +6,44 @@ date: "2022-08-19"
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
 ```
+
+```{r}
+meteorological <- read_csv(here("data", "ntl20_v6.csv"))
+ice_duration <- read_csv(here("data", "ntl33_v7.csv"), 
+                         na = "-999")
+```
+
+Create a visualization that compares ice duration across different lakes in the Madison Lake Area. Include both the actual ice duration values and some representation of summary statistics for each lake. Careful if you use a boxplot over a jitter or beeswarm - what values might be doubly represented? Can you find an argument that would help you remove those from the boxplot?
+
+```{r}
+ice_duration |>
+  ggplot(aes(x = lakeid, y = ice_duration)) +
+  geom_jitter(width = 0.2, color = "gray") +
+  geom_boxplot(width = 0.3, fill = NA, 
+               size = 1, 
+               outlier.color = NA)
+```
+
+Find the mean ice cover duration in Madison Lake Area by year (i.e., you’ll only be grouping by the year variable here). Understanding check: what are you finding the mean of here? Why are there multiple observations for each year?)
+```{r}
+ice_duration_summary <- ice_duration |>
+  group_by(year4) |>
+  summarize(mean_ice_duration = mean(ice_duration, na.rm = TRUE))
+
+ggplot(data = ice_duration_summary, aes(x = year4, y = mean_ice_duration)) +
+  geom_line()
+```
+
+Create an exploratory visualization of mean ice cover duration by year for the Madison Lake Area. Add a sentence or two below this exploratory graph describing the overall trend(s) you observe.
 
 ```{r}
 
 ```
+
+
+
 
